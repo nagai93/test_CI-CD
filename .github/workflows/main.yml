@@ -63,7 +63,7 @@ jobs:
 
            # 新しいsessionを起動
            tmux new-session -d -s ai-app-demo
-           tmux send-keys -t ai-app-demo "streamlit run main.py --server.port 8501" C-m
+           tmux send-keys -t ai-app-demo 'streamlit run main.py --server.port 8501' C-m
          EOF
          # SSHのセキュリティグループを閉じる
          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
