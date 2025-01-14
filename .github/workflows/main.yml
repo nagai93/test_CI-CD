@@ -47,22 +47,17 @@ jobs:
          echo "${{ secrets.PRIVATE_KEY }}" > private_key
          chmod 400 private_key
          # SSH接続
-         ssh -tt -o ConnectTimeout=60 -o StrictHostKeyChecking=no -i private_key ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST_NAME }} << EOF
-           cd /home/ec2-user/test_CI-CD
-           git fetch --prune
-           git checkout main
-           git pull origin main
-
-           # sessionがあればkill
+         ssh -tt -o ConnectTimeout=60 -o StrictHostKeyChecking=no -i private_key ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST_NAME }} "
+           cd /home/ec2-user/test_CI-CD &&
+           git fetch --prune &&
+           git checkout main &&
+           git pull origin main &&
            if tmux has-session -t ai-app-demo 2>/dev/null; then
-              echo "Session found. Killing existing session..."
-              tmux kill-session -t ai-app-demo
+             echo 'Session found. Killing existing session...';
+             tmux kill-session -t ai-app-demo;
            else
-              echo "No existing session found."
-           fi
-
-           # 新しいsessionを起動
-           tmux new-session -d -s ai-app-demo
-         EOF
-         # SSHのセキュリティグループを閉じる
+             echo 'No existing session found.';
+           fi &&
+           tmux new-session -d -s ai-app-demo \"streamlit run main.py --server.port 8501\"
+         "
          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
