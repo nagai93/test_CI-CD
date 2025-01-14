@@ -55,6 +55,7 @@ jobs:
            if tmux has-session -t ai-app-demo 2>/dev/null; then
              echo 'Session found. Killing existing session...';
              tmux kill-session -t ai-app-demo;
+             sleep 3;
            else
              echo 'No existing session found.';
            fi &&
