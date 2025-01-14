@@ -47,7 +47,7 @@ jobs:
          echo "${{ secrets.PRIVATE_KEY }}" > private_key
          chmod 400 private_key
          # SSH接続
-         ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST_NAME }} << EOF
+         ssh -t -o StrictHostKeyChecking=no -i private_key ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST_NAME }} << EOF
            cd /home/ec2-user/test_CI-CD
            git fetch --prune
            git checkout main
